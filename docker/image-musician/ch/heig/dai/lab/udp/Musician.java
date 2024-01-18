@@ -1,3 +1,5 @@
+package ch.heig.dai.lab.udp;
+
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;

@@ -1,3 +1,5 @@
+package ch.heig.dai.lab.udp;
+
 import java.io.IOException;
 import java.net.MulticastSocket;
 import java.net.InetSocketAddress;
