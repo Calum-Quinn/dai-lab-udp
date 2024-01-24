@@ -3,9 +3,7 @@ package ch.heig.dai.lab.udp;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.UUID;
 import java.net.InetSocketAddress;
 import com.google.gson.Gson;
@@ -16,10 +14,7 @@ class Musician {
     final static String IPADDRESS = "239.255.22.5";
     final static int PORT = 9904;
 
-    final static Random random = new Random();
-
     final static HashMap<String, String> instrumentSounds = new HashMap<>();
-    static ArrayList<String> keysList;
 
     private final UUID uuid;
 
@@ -28,10 +23,13 @@ class Musician {
 
     private final String sound;
 
+    private final long lastActivity;
+
     public Musician(String instrument) {
         this.uuid = UUID.randomUUID();
         this.instrument = instrument;
         sound = instrumentSounds.get(instrument);
+        lastActivity = System.currentTimeMillis();
     }
 
     public static void main(String[] args) {
@@ -44,11 +42,7 @@ class Musician {
             instrumentSounds.put("violin", "gzi-gzi");
             instrumentSounds.put("drum", "boum-boum");
 
-            // Store key list for choosing a random instrument
-            keysList = new ArrayList<>(instrumentSounds.keySet());
-
-            // Create a musician and assign a random instrument
-            Musician musician = new Musician(keysList.get(random.nextInt(0, keysList.size())));
+            Musician musician = new Musician(args[0]);
 
             // Convert the musician to JSON format and send to multicast address
             Gson gson = new Gson();
