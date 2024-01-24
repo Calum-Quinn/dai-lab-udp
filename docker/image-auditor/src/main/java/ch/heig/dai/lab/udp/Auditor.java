@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,6 +21,8 @@ public class Auditor {
     final static int TCP_PORT = 2205;
     final static HashMap<String, String> instrumentSounds = new HashMap<>();
     final static ArrayList<Musician> musicians = new ArrayList<>();
+    record Musician(UUID uuid, String instrument, long lastActivity) {}
+    //record Sound(UUID uuid, String sound, long lastActivity) {}
 
     public static void main(String[] args) {
         instrumentSounds.put("ti-ta-ti", "piano");
@@ -40,8 +43,7 @@ public class Auditor {
                 try (Socket socket = serverSocket.accept();
                      var out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), UTF_8))){
 
-                    musicians.removeIf(musician -> musician.getLastActivity() < System.currentTimeMillis() - 5000);
-
+                    musicians.removeIf(musician -> musician.lastActivity() < System.currentTimeMillis() - 5000);
                     Gson gson = new Gson();
                     String json = gson.toJson(musicians);
                     out.write(json);
@@ -67,13 +69,9 @@ public class Auditor {
                 String message = new String(packet.getData(), 0, packet.getLength(), UTF_8);
 
                 Gson gson = new Gson();
-                Musician musician = gson.fromJson(message, Musician.class);
+                Sound sound = gson.fromJson(message, Sound.class);
 
-                musician.setInstrument(instrumentSounds.get(musician.getSound()));
-
-                musicians.add(musician);
-
-                System.out.println(musician.getInstrument());
+                musicians.add(new Musician(sound.getUuid(), instrumentSounds.get(sound.getSound()), sound.getLastActivity()));
 
                 System.out.println("Received message: " + message + " from " + packet.getAddress() + ", port " + packet.getPort());
 
