@@ -21,9 +21,7 @@ public class Auditor {
     final static int TCP_PORT = 2205;
     final static HashMap<String, String> instrumentSounds = new HashMap<>();
     final static ArrayList<Musician> musicians = new ArrayList<>();
-    record Musician(UUID uuid, String instrument, long lastActivity) {}
-    //record Sound(UUID uuid, String sound, long lastActivity) {}
-
+    public record Musician(UUID uuid, String instrument, long lastActivity) {}
     public record Sound(UUID uuid, String sound, long lastActivity) {}
 
     public static void main(String[] args) {
@@ -77,7 +75,7 @@ public class Auditor {
                 Sound sound = gson.fromJson(message, Sound.class);
 
 //                Musician musician = new Musician(instrumentSounds.get(sound.getSound()),sound.getLastActivity(),sound.getUuid());
-                Musician musician = new Musician(instrumentSounds.get(sound.sound()),sound.lastActivity(),sound.uuid());
+                Musician musician = new Musician(sound.uuid(),instrumentSounds.get(sound.sound()),sound.lastActivity());
 
                 musicians.add(musician);
 

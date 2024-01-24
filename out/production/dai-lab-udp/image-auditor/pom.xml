@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ch.heig.dai.lab.udp.Musician</groupId>
-    <artifactId>Musician</artifactId>
+    <groupId>ch.heig.dai.lab.udp.Auditor</groupId>
+    <artifactId>Auditor</artifactId>
     <version>1.0</version>
 
     <properties>
@@ -22,7 +22,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ch.heig.dai.lab.udp.Musician</mainClass>
+                            <mainClass>ch.heig.dai.lab.udp.Auditor</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -36,7 +36,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ch.heig.dai.lab.udp.Musician</mainClass>
+                            <mainClass>ch.heig.dai.lab.udp.Auditor</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

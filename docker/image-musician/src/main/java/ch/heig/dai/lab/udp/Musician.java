@@ -16,13 +16,24 @@ class Musician {
     final static HashMap<String, String> instrumentSounds = new HashMap<>();
 
     private final UUID uuid;
+    public UUID getUuid() {
+        return uuid;
+    }
 
     // Marked as transient so as not to serialize this when converting to JSON
     private final transient String instrument;
 
     private final String sound;
 
+    public String getSound() {
+        return sound;
+    }
+
     private final long lastActivity;
+
+    public long getLastActivity() {
+        return lastActivity;
+    }
 
     public Musician(String instrument) {
         this.uuid = UUID.randomUUID();
@@ -47,13 +58,13 @@ class Musician {
 
         try (DatagramSocket socket = new DatagramSocket()) {
 
-
-
             Musician musician = new Musician(args[0]);
 
             // Convert the musician to JSON format and send to multicast address
             Gson gson = new Gson();
             String json = gson.toJson(musician);
+
+
             byte[] payload = json.getBytes(UTF_8);
             InetSocketAddress dest_address = new InetSocketAddress(IPADDRESS, PORT);
             var packet = new DatagramPacket(payload, payload.length, dest_address);
