@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,6 +21,8 @@ public class Auditor {
     final static int TCP_PORT = 2205;
     final static HashMap<String, String> instrumentSounds = new HashMap<>();
     final static ArrayList<Musician> musicians = new ArrayList<>();
+
+    public record Sound(UUID uuid, String sound, long lastActivity) {}
 
     public static void main(String[] args) {
         instrumentSounds.put("ti-ta-ti", "piano");
@@ -66,16 +69,18 @@ public class Auditor {
                 socket.receive(packet);
                 String message = new String(packet.getData(), 0, packet.getLength(), UTF_8);
 
-                Gson gson = new Gson();
-                Musician musician = gson.fromJson(message, Musician.class);
+//                Gson gson = new Gson();
+//                Musician musician = gson.fromJson(message, Musician.class);
 
-                musician.setInstrument(instrumentSounds.get(musician.getSound()));
+                Gson gson = new Gson();
+                Sound sound = gson.fromJson(message, Sound.class);
+
+//                Musician musician = new Musician(instrumentSounds.get(sound.getSound()),sound.getLastActivity(),sound.getUuid());
+                Musician musician = new Musician(instrumentSounds.get(sound.sound()),sound.lastActivity(),sound.uuid());
 
                 musicians.add(musician);
 
-                System.out.println(musician.getInstrument());
-
-                System.out.println("Received message: " + message + " from " + packet.getAddress() + ", port " + packet.getPort());
+                System.out.println("Received message: " + message);
 
                 socket.leaveGroup(group_address, netif);
             } catch (IOException ex) {
