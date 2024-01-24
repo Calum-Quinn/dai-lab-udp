@@ -37,17 +37,19 @@ class Musician {
     public static void main(String[] args) {
         try (DatagramSocket socket = new DatagramSocket()) {
 
+            // Fill hashmap
             instrumentSounds.put("piano", "ti-ta-ti");
             instrumentSounds.put("trumpet", "pouet");
             instrumentSounds.put("flute", "trulu");
             instrumentSounds.put("violin", "gzi-gzi");
             instrumentSounds.put("drum", "boum-boum");
 
+            // Store key list for choosing a random instrument
             Musician musician = new Musician(keysList.get(random.nextInt(0, keysList.size())));
 
+            // Convert the musician to JSON format and send to multicast address
             Gson gson = new Gson();
             String json = gson.toJson(musician);
-
             byte[] payload = json.getBytes(UTF_8);
             InetSocketAddress dest_address = new InetSocketAddress(IPADDRESS, PORT);
             var packet = new DatagramPacket(payload, payload.length, dest_address);
