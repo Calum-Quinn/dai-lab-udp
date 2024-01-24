@@ -53,27 +53,28 @@ public class Auditor {
     }
 
     private static void listenForUdp() {
-        /*try (MulticastSocket socket = new MulticastSocket(PORT)) {
+        while (true) {
+            try (MulticastSocket socket = new MulticastSocket(PORT)) {
+                InetSocketAddress group_address = new InetSocketAddress(IPADDRESS, PORT);
+                NetworkInterface netif = NetworkInterface.getByName("eth0");
+                socket.joinGroup(group_address, netif);
 
+                byte[] buffer = new byte[1024];
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                socket.receive(packet);
+                String message = new String(packet.getData(), 0, packet.getLength(), UTF_8);
 
-            InetSocketAddress group_address = new InetSocketAddress(IPADDRESS, PORT);
-            NetworkInterface netif = NetworkInterface.getByName("eth0");
-            socket.joinGroup(group_address, netif);
+                Gson gson = new Gson();
+                Object musician = gson.fromJson(message, Object.class);
 
-            byte[] buffer = new byte[1024];
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-            socket.receive(packet);
-            String message = new String(packet.getData(), 0, packet.getLength(), UTF_8);
+                musicians.add(musician);
 
-            Gson gson = new Gson();
-            Musician musician = gson.fromJson(message, Musician.class);
+                out.println("Received message: " + message + " from " + packet.getAddress() + ", port " + packet.getPort());
 
-            musicians.add(musician);
-
-            out.println("Received message: " + message + " from " + packet.getAddress() + ", port " + packet.getPort());
-            socket.leaveGroup(group_address, netif);
-        } catch (IOException ex) {
-            out.println(ex.getMessage());
-        }*/
+                socket.leaveGroup(group_address, netif);
+            } catch (IOException ex) {
+                out.println(ex.getMessage());
+            }
+        }
     }
 }
