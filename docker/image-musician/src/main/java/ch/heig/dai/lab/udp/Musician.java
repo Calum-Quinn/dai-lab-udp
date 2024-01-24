@@ -1,6 +1,5 @@
 package ch.heig.dai.lab.udp;
 
-import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 import java.util.HashMap;
@@ -33,14 +32,22 @@ class Musician {
     }
 
     public static void main(String[] args) {
+
+        // Fill hashmap
+        instrumentSounds.put("piano", "ti-ta-ti");
+        instrumentSounds.put("trumpet", "pouet");
+        instrumentSounds.put("flute", "trulu");
+        instrumentSounds.put("violin", "gzi-gzi");
+        instrumentSounds.put("drum", "boum-boum");
+
+        if (args.length == 0 || !instrumentSounds.containsKey(args[0])) {
+            System.out.println("Invalid instrument");
+            System.exit(1);
+        }
+
         try (DatagramSocket socket = new DatagramSocket()) {
 
-            // Fill hashmap
-            instrumentSounds.put("piano", "ti-ta-ti");
-            instrumentSounds.put("trumpet", "pouet");
-            instrumentSounds.put("flute", "trulu");
-            instrumentSounds.put("violin", "gzi-gzi");
-            instrumentSounds.put("drum", "boum-boum");
+
 
             Musician musician = new Musician(args[0]);
 
@@ -51,7 +58,7 @@ class Musician {
             InetSocketAddress dest_address = new InetSocketAddress(IPADDRESS, PORT);
             var packet = new DatagramPacket(payload, payload.length, dest_address);
             socket.send(packet);
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }

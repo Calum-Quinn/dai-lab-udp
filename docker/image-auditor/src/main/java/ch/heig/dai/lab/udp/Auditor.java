@@ -11,16 +11,15 @@ import java.util.concurrent.Executors;
 
 import com.google.gson.Gson;
 
-import static java.lang.System.out;
 import static java.nio.charset.StandardCharsets.*;
 
 
 public class Auditor {
     final static String IPADDRESS = "239.255.22.5";
-    final static int PORT = 9904;
+    final static int UDP_PORT = 9904;
     final static int TCP_PORT = 2205;
     final static HashMap<String, String> instrumentSounds = new HashMap<>();
-    final static ArrayList<Object> musicians = new ArrayList<>();
+    final static ArrayList<Musician> musicians = new ArrayList<>();
 
     public static void main(String[] args) {
         instrumentSounds.put("ti-ta-ti", "piano");
@@ -40,22 +39,25 @@ public class Auditor {
             while (true) {
                 try (Socket socket = serverSocket.accept();
                      var out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), UTF_8))){
+
+                    musicians.removeIf(musician -> musician.getLastActivity() < System.currentTimeMillis() - 5000);
+
                     Gson gson = new Gson();
                     String json = gson.toJson(musicians);
                     out.write(json);
                 } catch (IOException e) {
-                    out.println(e.getMessage());
+                    System.out.println(e.getMessage());
                 }
             }
         } catch (IOException e) {
-            out.println(e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
     private static void listenForUdp() {
         while (true) {
-            try (MulticastSocket socket = new MulticastSocket(PORT)) {
-                InetSocketAddress group_address = new InetSocketAddress(IPADDRESS, PORT);
+            try (MulticastSocket socket = new MulticastSocket(UDP_PORT)) {
+                InetSocketAddress group_address = new InetSocketAddress(IPADDRESS, UDP_PORT);
                 NetworkInterface netif = NetworkInterface.getByName("eth0");
                 socket.joinGroup(group_address, netif);
 
@@ -65,15 +67,19 @@ public class Auditor {
                 String message = new String(packet.getData(), 0, packet.getLength(), UTF_8);
 
                 Gson gson = new Gson();
-                Object musician = gson.fromJson(message, Object.class);
+                Musician musician = gson.fromJson(message, Musician.class);
+
+                musician.setInstrument(instrumentSounds.get(musician.getSound()));
 
                 musicians.add(musician);
 
-                out.println("Received message: " + message + " from " + packet.getAddress() + ", port " + packet.getPort());
+                System.out.println(musician.getInstrument());
+
+                System.out.println("Received message: " + message + " from " + packet.getAddress() + ", port " + packet.getPort());
 
                 socket.leaveGroup(group_address, netif);
             } catch (IOException ex) {
-                out.println(ex.getMessage());
+                System.out.println(ex.getMessage());
             }
         }
     }
