@@ -21,6 +21,8 @@ public class Auditor {
     final static int TCP_PORT = 2205;
     final static HashMap<String, String> instrumentSounds = new HashMap<>();
     final static ArrayList<Musician> musicians = new ArrayList<>();
+    record Musician(UUID uuid, String instrument, long lastActivity) {}
+    //record Sound(UUID uuid, String sound, long lastActivity) {}
 
     public record Sound(UUID uuid, String sound, long lastActivity) {}
 
@@ -43,8 +45,7 @@ public class Auditor {
                 try (Socket socket = serverSocket.accept();
                      var out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), UTF_8))){
 
-                    musicians.removeIf(musician -> musician.getLastActivity() < System.currentTimeMillis() - 5000);
-
+                    musicians.removeIf(musician -> musician.lastActivity() < System.currentTimeMillis() - 5000);
                     Gson gson = new Gson();
                     String json = gson.toJson(musicians);
                     out.write(json);
