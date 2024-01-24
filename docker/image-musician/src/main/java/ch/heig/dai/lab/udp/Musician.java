@@ -19,7 +19,7 @@ class Musician {
     final static Random random = new Random();
 
     final static HashMap<String, String> instrumentSounds = new HashMap<>();
-    final static ArrayList<String> keysList = new ArrayList<>(instrumentSounds.keySet());
+    static ArrayList<String> keysList;
 
     private final UUID uuid;
 
@@ -45,6 +45,9 @@ class Musician {
             instrumentSounds.put("drum", "boum-boum");
 
             // Store key list for choosing a random instrument
+            keysList = new ArrayList<>(instrumentSounds.keySet());
+
+            // Create a musician and assign a random instrument
             Musician musician = new Musician(keysList.get(random.nextInt(0, keysList.size())));
 
             // Convert the musician to JSON format and send to multicast address
