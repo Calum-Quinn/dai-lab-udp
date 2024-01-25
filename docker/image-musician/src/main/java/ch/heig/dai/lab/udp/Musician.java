@@ -16,21 +16,12 @@ import static java.nio.charset.StandardCharsets.*;
 class Musician {
     final static String IPADDRESS = "239.255.22.5";
     final static int PORT = 9904;
-
     final static HashMap<String, String> instrumentSounds = new HashMap<>();
-
     private final UUID uuid;
-
     // Marked as transient so as not to serialize this when converting to JSON
     private final transient String instrument;
-
     private final String sound;
-
     private long lastActivity;
-
-    public void setLastActivity(long lastActivity) {
-        this.lastActivity = lastActivity;
-    }
 
     public Musician(String instrument) {
         this.uuid = UUID.randomUUID();
@@ -39,8 +30,11 @@ class Musician {
         lastActivity = System.currentTimeMillis();
     }
 
-    public static void main(String[] args) {
+    public void setLastActivity(long lastActivity) {
+        this.lastActivity = lastActivity;
+    }
 
+    public static void main(String[] args) {
         // Fill the hashmap
         instrumentSounds.put("piano", "ti-ta-ti");
         instrumentSounds.put("trumpet", "pouet");
@@ -55,7 +49,6 @@ class Musician {
         }
 
         try (DatagramSocket socket = new DatagramSocket()) {
-
             // Create a new musician
             Musician musician = new Musician(args[0]);
 

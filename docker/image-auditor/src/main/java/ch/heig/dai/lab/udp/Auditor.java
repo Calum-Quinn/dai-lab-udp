@@ -23,11 +23,13 @@ public class Auditor {
     final static ArrayList<Musician> musicians = new ArrayList<>();
 
     // Records so as not to use classes for purely temporary objects
-    public record Musician(UUID uuid, String instrument, long lastActivity) {}
-    public record Sound(UUID uuid, String sound, long lastActivity) {}
+    public record Musician(UUID uuid, String instrument, long lastActivity) {
+    }
+
+    public record Sound(UUID uuid, String sound, long lastActivity) {
+    }
 
     public static void main(String[] args) {
-
         // Fill the hashmap
         instrumentSounds.put("ti-ta-ti", "piano");
         instrumentSounds.put("pouet", "trumpet");
@@ -47,7 +49,7 @@ public class Auditor {
             // While true so that it continues to receive requests indefinitely
             while (true) {
                 try (Socket socket = serverSocket.accept();
-                     var out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), UTF_8))){
+                     var out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), UTF_8))) {
 
                     // Remove inactive musicians
                     musicians.removeIf(musician -> musician.lastActivity() < System.currentTimeMillis() - 5000);
@@ -66,7 +68,6 @@ public class Auditor {
     }
 
     private static void listenForUdp() {
-
         try (MulticastSocket socket = new MulticastSocket(UDP_PORT)) {
             // Initialize the multicast address
             InetSocketAddress group_address = new InetSocketAddress(IPADDRESS, UDP_PORT);
