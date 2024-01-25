@@ -15,7 +15,7 @@ Organization
 ------------
 
 * **You can work in groups of 2 students**.
-*  You can fork this repository or manually copy it to your private respository. However, you have to **use exactly the same directory structure for the validation procedure to work**. 
+*  You can fork this repository or manually copy it to your private respository. However, you have to **use exactly the same directory structure for the validation procedure to work**.
 
 Requirements
 ------------
